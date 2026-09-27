@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Request Doorstep Waste Pickup – EcoCollect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            
+            <div class="text-center mb-4">
+                <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">
+                    <i class="fa-solid fa-truck-fast me-1"></i> Easy 60-Second Booking
+                </span>
+                <h1 class="fw-bold mb-2">Request Waste Pickup</h1>
+                <p class="text-secondary max-w-600 mx-auto">
+                    Fill out the form below to schedule a verified recycling pickup. You will receive an instant unique Request ID to track status.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-3 px-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fa-solid fa-file-pen me-2"></i> Pickup Details
+                    </h5>
+                </div>
+                
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form action="{{ url_for('request_pickup') }}" method="POST">
+                        
+                        <!-- 1. Waste Category Visual Selector -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark mb-2">
+                                1. Select Waste Category <span class="text-danger">*</span>
+                            </label>
+                            
+                            <!-- Visual Category Grid -->
+                            <div class="row g-2 mb-3">
+                                {% set selected_cat = form_data.waste_category if form_data.waste_category else preselected_category %}
+                                
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'Plastic' %}selected border-success bg-light{% endif %}" data-category="Plastic">
+                                        <div class="fs-2 text-info mb-1"><i class="fa-solid fa-recycle"></i></div>
+                                        <div class="fw-bold text-dark small">Plastic</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'Paper' %}selected border-success bg-light{% endif %}" data-category="Paper">
+                                        <div class="fs-2 text-primary mb-1"><i class="fa-solid fa-newspaper"></i></div>
+                                        <div class="fw-bold text-dark small">Paper</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'Glass' %}selected border-success bg-light{% endif %}" data-category="Glass">
+                                        <div class="fs-2 text-success mb-1"><i class="fa-solid fa-wine-bottle"></i></div>
+                                        <div class="fw-bold text-dark small">Glass</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'Metal' %}selected border-success bg-light{% endif %}" data-category="Metal">
+                                        <div class="fs-2 text-warning mb-1"><i class="fa-solid fa-box-archive"></i></div>
+                                        <div class="fw-bold text-dark small">Metal</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'E-Waste' %}selected border-success bg-light{% endif %}" data-category="E-Waste">
+                                        <div class="fs-2 mb-1" style="color:#8b5cf6;"><i class="fa-solid fa-laptop-code"></i></div>
+                                        <div class="fw-bold text-dark small">E-Waste</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="category-card category-selectable-card p-3 h-100 {% if selected_cat == 'Organic Waste' %}selected border-success bg-light{% endif %}" data-category="Organic Waste">
+                                        <div class="fs-2 text-success mb-1"><i class="fa-solid fa-seedling"></i></div>
+                                        <div class="fw-bold text-dark small">Organic Waste</div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="category-card category-selectable-card p-3 h-100 d-flex align-items-center justify-content-center gap-2 {% if selected_cat == 'Other' %}selected border-success bg-light{% endif %}" data-category="Other">
+                                        <div class="fs-2 text-secondary"><i class="fa-solid fa-layer-group"></i></div>
+                                        <div class="fw-bold text-dark small">Other / Mixed Waste</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Synchronized Form Select Element -->
+                            <select name="waste_category" id="waste_category_select" class="form-select form-select-lg" required>
+                                <option value="" disabled {% if not selected_cat %}selected{% endif %}>Choose Waste Category...</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat }}" {% if selected_cat == cat %}selected{% endif %}>{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- 2. Contact Information -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark mb-2">2. Contact Information</label>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-user text-muted"></i></span>
+                                        <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" value="{{ form_data.name if form_data.name else '' }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Mobile Number <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-phone text-muted"></i></span>
+                                        <input type="tel" name="phone" class="form-control" placeholder="e.g. +91 98765 43210" value="{{ form_data.phone if form_data.phone else '' }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-envelope text-muted"></i></span>
+                                        <input type="email" name="email" class="form-control" placeholder="e.g. john@example.com" value="{{ form_data.email if form_data.email else '' }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Quantity & Location Details -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark mb-2">3. Pickup Location & Estimated Quantity</label>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-semibold">Approximate Quantity <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-weight-scale text-muted"></i></span>
+                                        <input type="text" name="quantity" class="form-control" placeholder="e.g. 3 large bags, 15 kg, 2 cartons, or 4 old laptops" value="{{ form_data.quantity if form_data.quantity else '' }}" required>
+                                    </div>
+                                    <div class="form-text">Provide an estimate in bags, cartons, kilograms, or item count to help us size the collection vehicle.</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-semibold">Pickup Address <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                        <textarea name="address" class="form-control" rows="2" placeholder="Full street address, apartment / suite number, landmark, city" required>{{ form_data.address if form_data.address else '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Schedule & Notes -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark mb-2">4. Preferred Date & Time Slot</label>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Pickup Date <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-calendar-day text-muted"></i></span>
+                                        <input type="date" name="pickup_date" id="pickup_date" class="form-control" value="{{ form_data.pickup_date if form_data.pickup_date else '' }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Preferred Time Slot <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-clock text-muted"></i></span>
+                                        <select name="time_slot" class="form-select" required>
+                                            <option value="" disabled {% if not form_data.time_slot %}selected{% endif %}>Choose Slot...</option>
+                                            {% for slot in time_slots %}
+                                                <option value="{{ slot }}" {% if form_data.time_slot == slot %}selected{% endif %}>{{ slot }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-semibold">Additional Notes (Optional)</label>
+                                    <textarea name="notes" class="form-control" rows="2" placeholder="Gate access code, landmark, packaging state, or instructions for the driver...">{{ form_data.notes if form_data.notes else '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 pt-3">
+                            <button type="submit" class="btn btn-success btn-lg py-3 fw-bold rounded-pill shadow-sm">
+                                <i class="fa-solid fa-paper-plane me-2"></i> Submit Pickup Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('track') }}" class="text-secondary text-decoration-none small">
+                    Already requested? <span class="text-success fw-bold">Track your request status here &rarr;</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

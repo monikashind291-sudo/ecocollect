@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Waste Guide – Instant Waste Categorization{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            
+            <!-- Page Title -->
+            <div class="text-center mb-5">
+                <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">
+                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> AI & Smart Rule-Based Engine
+                </span>
+                <h1 class="fw-bold mb-2">Smart Waste Classification Guide</h1>
+                <p class="text-secondary max-w-650 mx-auto">
+                    Not sure which bin an item belongs to? Type any common household object below to instantly find its proper recycling stream and collection instructions.
+                </p>
+            </div>
+
+            <!-- Search Card -->
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mb-4 bg-white">
+                <form action="{{ url_for('guide') }}" method="GET" id="guide-search-form" class="row g-2 align-items-center mb-3">
+                    <div class="col-md-9">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0 text-success">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                name="item" 
+                                id="guide-item-input" 
+                                class="form-control border-start-0" 
+                                placeholder="e.g. old mobile phone, plastic bottle, aluminium can..." 
+                                value="{{ query }}" 
+                                required
+                                autocomplete="off"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold rounded-3">
+                            <i class="fa-solid fa-bolt me-1"></i> Identify Waste
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Hackathon Demo Suggestions -->
+                <div class="mt-2">
+                    <div class="small text-muted fw-bold mb-2">
+                        <i class="fa-solid fa-hand-pointer text-success me-1"></i> Try Quick Hackathon Test Examples:
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for sug in suggestions %}
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1"
+                                onclick="fillGuideSearch('{{ sug.query }}')"
+                            >
+                                {{ sug.label }} <span class="badge bg-light text-dark ms-1 border">{{ sug.category }}</span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Card (If Search Submitted) -->
+            {% if result %}
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white border-top border-4" style="border-top-color: {{ result.color }} !important;">
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <div class="d-flex flex-wrap justify-content-between align-items-center pb-4 mb-4 border-bottom gap-3">
+                            <div>
+                                <span class="text-uppercase small text-muted fw-bold">Classification Result for:</span>
+                                <h3 class="fw-bold text-dark mb-0 fst-italic">"{{ result.query }}"</h3>
+                            </div>
+                            <div>
+                                <span class="badge-category badge-{{ result.category|lower|replace(' ', '') }} fs-6 px-3 py-2">
+                                    <i class="fa-solid {{ result.icon }} me-1"></i> {{ result.category }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <!-- Target Bin -->
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-4 border h-100">
+                                    <div class="small fw-bold text-secondary text-uppercase mb-1">
+                                        <i class="fa-solid fa-trash-can text-success me-1"></i> Designated Bin / Stream
+                                    </div>
+                                    <div class="fs-5 fw-bold text-dark">{{ result.bin }}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Key Recycling Tip -->
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-4 border h-100">
+                                    <div class="small fw-bold text-secondary text-uppercase mb-1">
+                                        <i class="fa-solid fa-circle-check text-primary me-1"></i> Preparation Instruction
+                                    </div>
+                                    <div class="small text-dark">{{ result.tip }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Eco Fact -->
+                        <div class="p-3 rounded-4 bg-success-subtle text-success-emphasis border border-success-subtle mb-4 d-flex align-items-start gap-3">
+                            <div class="fs-3"><i class="fa-solid fa-leaf text-success"></i></div>
+                            <div>
+                                <div class="fw-bold mb-1">Eco Impact Insight:</div>
+                                <div class="small">{{ result.fact }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Action Triggers -->
+                        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between pt-3 border-top">
+                            <span class="text-muted small">Ready to dispose of this material responsibly?</span>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('request_pickup', category=result.category) }}" class="btn btn-success rounded-pill px-4 fw-bold">
+                                    <i class="fa-solid fa-truck-pickup me-1"></i> Request {{ result.category }} Pickup
+                                </a>
+                                <a href="{{ url_for('guide') }}" class="btn btn-outline-secondary rounded-pill px-3">
+                                    <i class="fa-solid fa-rotate-left me-1"></i> Check Another Item
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Category Reference Grid -->
+            <div class="mt-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark">Waste Category Directory</h3>
+                    <p class="text-secondary small">Comprehensive overview of all 7 supported recycling channels.</p>
+                </div>
+
+                <div class="row g-3">
+                    {% for cat_name, cat_info in metadata.items() %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 bg-white">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <div class="fs-4" style="color: {{ cat_info.color }};">
+                                        <i class="fa-solid {{ cat_info.icon }}"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-0 text-dark">{{ cat_name }}</h5>
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    <strong>Bin:</strong> {{ cat_info.bin }}
+                                </div>
+                                <p class="small text-secondary mb-3 flex-grow-1">
+                                    {{ cat_info.tip }}
+                                </p>
+                                <a href="{{ url_for('request_pickup', category=cat_name) }}" class="btn btn-sm btn-outline-success rounded-pill w-100 mt-auto">
+                                    Schedule {{ cat_name }}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

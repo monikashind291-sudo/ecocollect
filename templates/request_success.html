@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Request Submitted Successfully – EcoCollect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden text-center">
+                <div class="bg-success py-5 px-4 text-white">
+                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background: rgba(255,255,255,0.2); border-radius: 50%;">
+                        <i class="fa-solid fa-circle-check fs-1 text-white"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">Pickup Request Confirmed!</h2>
+                    <p class="mb-0 text-white-50">Thank you for contributing to a cleaner and sustainable planet.</p>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    
+                    <!-- Request ID Highlight Box -->
+                    <div class="p-4 rounded-4 bg-light border border-success-subtle mb-4">
+                        <div class="text-uppercase small fw-bold text-muted mb-1">Your Unique Request ID</div>
+                        <div class="display-6 fw-bold text-success mb-3" id="display-req-id">{{ request.request_id }}</div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3" id="btn-copy-id" onclick="copyRequestId('{{ request.request_id }}')">
+                                <i class="fa-regular fa-copy me-1"></i> Copy Request ID
+                            </button>
+                            <a href="{{ url_for('track', request_id=request.request_id) }}" class="btn btn-success btn-sm rounded-pill px-3">
+                                <i class="fa-solid fa-magnifying-glass-location me-1"></i> Track Progress Now
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Details Summary Table -->
+                    <h5 class="fw-bold text-start mb-3 text-dark">
+                        <i class="fa-solid fa-receipt me-2 text-success"></i> Request Summary
+                    </h5>
+                    
+                    <div class="table-responsive mb-4 text-start">
+                        <table class="table table-bordered align-middle">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light text-muted w-35 py-2">Status</th>
+                                    <td class="py-2">
+                                        <span class="badge-status status-pending">
+                                            <i class="fa-regular fa-clock me-1"></i> {{ request.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted py-2">Waste Category</th>
+                                    <td class="py-2">
+                                        <span class="badge-category badge-{{ request.waste_category|lower|replace(' ', '') }}">
+                                            {{ request.waste_category }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted py-2">Quantity</th>
+                                    <td class="py-2 fw-semibold">{{ request.quantity }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted py-2">Pickup Date & Time</th>
+                                    <td class="py-2">{{ request.pickup_date }} &bull; {{ request.time_slot }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted py-2">Address</th>
+                                    <td class="py-2">{{ request.address }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted py-2">Contact</th>
+                                    <td class="py-2">{{ request.name }} &bull; {{ request.phone }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="fa-solid fa-house me-1"></i> Back to Home
+                        </a>
+                        <a href="{{ url_for('request_pickup') }}" class="btn btn-outline-success rounded-pill px-4">
+                            <i class="fa-solid fa-plus me-1"></i> Book Another Pickup
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}EcoCollect – Smart Waste Collection for a Cleaner Tomorrow{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-seedling"></i> FIT-FEST 2026 HACKATHON MVP
+                </div>
+                <h1 class="hero-title mb-3">
+                    EcoCollect
+                </h1>
+                <h2 class="h3 fw-bold hero-tagline mb-3">
+                    "Smart Waste Collection for a Cleaner Tomorrow"
+                </h2>
+                <p class="hero-lead mb-4">
+                    Bridge the gap between residents and waste collection services. Easily categorize recyclable materials, schedule hassle-free door-to-door pickups, and track collection progress in real time.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('request_pickup') }}" class="btn btn-success btn-lg px-4 py-3 fw-bold rounded-pill shadow-sm">
+                        <i class="fa-solid fa-truck-pickup me-2"></i> Request Pickup
+                    </a>
+                    <a href="{{ url_for('track') }}" class="btn btn-outline-dark btn-lg px-4 py-3 fw-bold rounded-pill shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass-location me-2"></i> Track Request
+                    </a>
+                    <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary btn-lg px-3 py-3 fw-semibold rounded-pill">
+                        <i class="fa-solid fa-shield-halved me-1"></i> Admin Portal
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-5">
+                <div class="hero-graphic-card">
+                    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+                        <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill">
+                            <i class="fa-solid fa-circle-dot me-1"></i> Live Network Activity
+                        </span>
+                        <span class="text-muted small">Updated Real-Time</span>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="p-3 bg-white rounded-3 border">
+                                <div class="text-muted small fw-semibold">Total Requests</div>
+                                <div class="fs-2 fw-bold text-dark">{{ stats.total }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-white rounded-3 border">
+                                <div class="text-muted small fw-semibold">Completed</div>
+                                <div class="fs-2 fw-bold text-success">{{ stats.completed }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick search widget into Smart Guide -->
+                    <div class="p-3 bg-light rounded-3 border">
+                        <label class="form-label small fw-bold text-secondary mb-1">
+                            <i class="fa-solid fa-wand-magic-sparkles text-success me-1"></i> Unsure how to dispose an item?
+                        </label>
+                        <form action="{{ url_for('guide') }}" method="GET" class="d-flex gap-2">
+                            <input type="text" name="item" class="form-control form-control-sm" placeholder="e.g. old mobile phone, plastic bottle..." required>
+                            <button type="submit" class="btn btn-sm btn-success text-nowrap">
+                                <i class="fa-solid fa-arrow-right"></i> Check
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Problem & Solution Section -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-uppercase fw-bold text-success small tracking-wide">The Impact</span>
+            <h2 class="fw-bold mt-1">Understanding The Problem & Our Solution</h2>
+            <p class="text-secondary">Over 80% of recyclable materials end up in landfills due to confusion over sorting rules and fragmented pickup logistics.</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-danger border-opacity-25 shadow-sm p-4 rounded-4 bg-white">
+                    <div class="card-icon-wrapper bg-danger-subtle text-danger">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h4 class="fw-bold text-danger mb-3">The Problem</h4>
+                    <ul class="text-secondary list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-xmark text-danger mt-1"></i>
+                            <span><strong>Sorting Confusion:</strong> Residents are often unsure which bin items belong to (e.g., E-waste, mixed plastics, broken glass).</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-xmark text-danger mt-1"></i>
+                            <span><strong>No Reliable Pickup Scheduling:</strong> Bulk recyclables and e-waste pile up in homes because regular trash trucks do not accept them.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-xmark text-danger mt-1"></i>
+                            <span><strong>Zero Operational Visibility:</strong> Collection crews struggle with manual logs and lack centralized status tracking.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 border-success border-opacity-25 shadow-sm p-4 rounded-4 bg-white">
+                    <div class="card-icon-wrapper bg-success-subtle text-success">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h4 class="fw-bold text-success mb-3">The EcoCollect Solution</h4>
+                    <ul class="text-secondary list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                            <span><strong>Instant Smart Guide:</strong> Type any item name to immediately see its category, proper bin color, and disposal tips.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                            <span><strong>Streamlined Doorstep Pickup:</strong> Book pickups in under 60 seconds with unique tracking IDs (e.g. EC-1001).</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                            <span><strong>Unified Admin Dispatch & Metrics:</strong> Live dashboard to filter, assign, update progress, and visualize recovery statistics.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Waste Categories Section -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container py-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+            <div>
+                <span class="text-uppercase fw-bold text-success small tracking-wide">Categorized Collection</span>
+                <h2 class="fw-bold mt-1 mb-2">Supported Waste Categories</h2>
+                <p class="text-secondary mb-0">Click any category to book a doorstep collection.</p>
+            </div>
+            <a href="{{ url_for('request_pickup') }}" class="btn btn-outline-success fw-bold rounded-pill mt-3 mt-md-0">
+                View All Categories <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        
+        <div class="row g-3">
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='Plastic') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-info mb-2"><i class="fa-solid fa-recycle"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Plastic</h5>
+                        <p class="small text-muted mb-0">Bottles, tubs, containers, wrappers</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='Paper') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-newspaper"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Paper</h5>
+                        <p class="small text-muted mb-0">Newspapers, cartons, books, magazines</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='Glass') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-success mb-2"><i class="fa-solid fa-wine-bottle"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Glass</h5>
+                        <p class="small text-muted mb-0">Bottles, jars, unbroken glassware</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='Metal') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-warning mb-2"><i class="fa-solid fa-box-archive"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Metal</h5>
+                        <p class="small text-muted mb-0">Aluminium cans, tins, scrap metals</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='E-Waste') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-purple mb-2" style="color: #8b5cf6;"><i class="fa-solid fa-laptop-code"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">E-Waste</h5>
+                        <p class="small text-muted mb-0">Phones, laptops, chargers, cables</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('request_pickup', category='Organic Waste') }}" class="text-decoration-none">
+                    <div class="category-card h-100">
+                        <div class="fs-1 text-success mb-2"><i class="fa-solid fa-seedling"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Organic Waste</h5>
+                        <p class="small text-muted mb-0">Food leftovers, vegetable peels, garden waste</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-12 col-md-8 col-lg-6">
+                <a href="{{ url_for('request_pickup', category='Other') }}" class="text-decoration-none">
+                    <div class="category-card h-100 d-flex flex-column justify-content-center">
+                        <div class="fs-1 text-secondary mb-2"><i class="fa-solid fa-layer-group"></i></div>
+                        <h5 class="fw-bold text-dark mb-1">Other / Bulky Waste</h5>
+                        <p class="small text-muted mb-0">Textiles, ceramics, paint cans, or mixed household items requiring special handling</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="text-uppercase fw-bold text-success small tracking-wide">Simple 3-Step Process</span>
+            <h2 class="fw-bold mt-1">How EcoCollect Works</h2>
+        </div>
+        
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 border h-100 shadow-sm">
+                    <div class="step-icon mx-auto mb-3" style="width: 60px; height: 60px; background: #ecfdf5; color: #059669; border-color: #a7f3d0;">
+                        <i class="fa-solid fa-clipboard-list fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">1. Request Pickup</h5>
+                    <p class="text-secondary small mb-0">Select your waste category, specify the quantity, and choose a preferred pickup date & slot.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 border h-100 shadow-sm">
+                    <div class="step-icon mx-auto mb-3" style="width: 60px; height: 60px; background: #eff6ff; color: #3b82f6; border-color: #bfdbfe;">
+                        <i class="fa-solid fa-id-card fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">2. Get Unique ID</h5>
+                    <p class="text-secondary small mb-0">Receive a unique tracking code (e.g. EC-1001) to track collection truck dispatch and status live.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 border h-100 shadow-sm">
+                    <div class="step-icon mx-auto mb-3" style="width: 60px; height: 60px; background: #fdf4ff; color: #a855f7; border-color: #f5d0fe;">
+                        <i class="fa-solid fa-recycle fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">3. Eco-Friendly Recycling</h5>
+                    <p class="text-secondary small mb-0">Certified collection partners pick up the materials and divert them safely into recycling facilities.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('request_pickup') }}" class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold shadow">
+                Schedule a Pickup Now <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

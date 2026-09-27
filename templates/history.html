@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Pickup History – Completed Collections – EcoCollect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-success-subtle text-success px-3 py-1 small rounded-pill fw-bold">
+                    <i class="fa-solid fa-clock-rotate-left me-1"></i> Public Verification Log
+                </span>
+            </div>
+            <h1 class="h2 fw-bold text-dark mb-1">Pickup History Log</h1>
+            <p class="text-secondary mb-0 small">
+                Verified historical archive of all successfully completed waste collections and diverted recycling batches.
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('request_pickup') }}" class="btn btn-success fw-semibold">
+                <i class="fa-solid fa-plus me-1"></i> Book New Pickup
+            </a>
+            <a href="{{ url_for('stats') }}" class="btn btn-outline-secondary fw-semibold">
+                <i class="fa-solid fa-chart-pie me-1"></i> View Stats
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Stats Banner -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-success">
+                <div class="text-muted small fw-bold text-uppercase">Completed Collections</div>
+                <div class="fs-2 fw-bold text-success mt-1">{{ requests|length }}</div>
+                <div class="small text-muted">Zero landfill diversion rate</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-primary">
+                <div class="text-muted small fw-bold text-uppercase">Estimated Recycled Weight</div>
+                <div class="fs-2 fw-bold text-primary mt-1">~185 kg</div>
+                <div class="small text-muted">Plastics, metals, paper & e-waste</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-info">
+                <div class="text-muted small fw-bold text-uppercase">Logistics Efficiency</div>
+                <div class="fs-2 fw-bold text-info mt-1">100%</div>
+                <div class="small text-muted">Doorstep verified collections</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark">
+                <i class="fa-solid fa-list-check text-success me-2"></i> Completed Collection Records
+            </div>
+            <div>
+                <input type="text" id="history-search" class="form-control form-control-sm" placeholder="Quick filter table..." onkeyup="filterHistoryTable()">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="historyTable">
+                <thead class="table-light text-secondary small text-uppercase fw-bold">
+                    <tr>
+                        <th class="ps-4 py-3">Request ID</th>
+                        <th class="py-3">Waste Category</th>
+                        <th class="py-3">Quantity</th>
+                        <th class="py-3">Pickup Date</th>
+                        <th class="py-3">Address / Area</th>
+                        <th class="py-3">Status</th>
+                        <th class="py-3 text-end pe-4">Verification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if requests %}
+                        {% for req in requests %}
+                            <tr>
+                                <td class="ps-4 fw-bold font-monospace">
+                                    <a href="{{ url_for('track', request_id=req.request_id) }}" class="text-decoration-none text-dark hover-green">
+                                        {{ req.request_id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge-category badge-{{ req.waste_category|lower|replace(' ', '') }}">
+                                        {{ req.waste_category }}
+                                    </span>
+                                </td>
+                                <td class="small fw-semibold text-dark">
+                                    {{ req.quantity }}
+                                </td>
+                                <td>
+                                    <div class="small fw-semibold text-dark">
+                                        <i class="fa-regular fa-calendar-check text-success me-1"></i> {{ req.pickup_date }}
+                                    </div>
+                                    <div class="small text-muted">
+                                        Slot: {{ req.time_slot }}
+                                    </div>
+                                </td>
+                                <td style="max-width: 250px;">
+                                    <div class="text-truncate small text-secondary" title="{{ req.address }}">
+                                        <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ req.address }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-status status-completed">
+                                        <i class="fa-solid fa-circle-check me-1"></i> {{ req.status }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="{{ url_for('track', request_id=req.request_id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                                        <i class="fa-solid fa-magnifying-glass me-1"></i> View Receipt
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <div class="fs-1 mb-2 text-secondary"><i class="fa-solid fa-box-open"></i></div>
+                                <h5 class="fw-bold">No Completed Pickups Yet</h5>
+                                <p class="mb-0 small">When pickup requests are marked as 'Completed' by the operator, they appear here.</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card-footer bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+            <span class="small text-muted">Showing <strong>{{ requests|length }}</strong> completed pickup(s)</span>
+            <span class="small text-muted"><i class="fa-solid fa-shield-halved text-success me-1"></i> Public transparency ledger</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterHistoryTable() {
+    const input = document.getElementById("history-search");
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll("#historyTable tbody tr");
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+}
+</script>
+{% endblock %}
